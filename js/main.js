@@ -17,21 +17,17 @@ function deleteLastCharacter() {
 
 function calculateResult() {
     const input = document.getElementById('output').textContent 
-    const operationRegex = /^-?\d+(\.\d+)?(?:[+\-*\/%]-?\d+(\.\d+)?)*$/ 
-
-    if (!operationRegex.test(input)) {
-        document.getElementById('output').textContent = 'Operação inválida' 
-        return 
-    }
+    const operationRegex = /^-?\d+(\.\d+)?(?:-[+\/*]\d+(\.\d+)?%?)*$/
 
     let result 
     try {
-        const modifiedInput = input.replace(/(\d+(\.\d+)?)%/g, (match, number) => {
-            return parseFloat(number) / 100 
-        }) 
-        result = eval(modifiedInput) 
-        document.getElementById('output').textContent = result 
+        const modifiedInput = input.replace(/(\d+(\.\d+)?)%/g, (number) => {
+        return parseFloat(number) / 100
+    })
+    result = eval(modifiedInput);
+    document.getElementById('output').textContent = result;
     } catch (error) {
-        document.getElementById('output').textContent = 'Erro de cálculo' 
+        document.getElementById('output').textContent = 'Erro de cálculo';
     }
+
 }
