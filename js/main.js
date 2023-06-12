@@ -1,56 +1,144 @@
-function clearOutput() {
-    document.getElementById('output').innerHTML = '' 
+let currentOperand = "";
+let previousOperand = "";
+let operation = undefined;
+
+function clear() {
+  currentOperand = "";
+  previousOperand = "";
+  operation = undefined;
 }
 
-function printToOutput(value) {
-    document.getElementById('output').innerHTML += value 
+function deleteNumber() {
+  currentOperand = currentOperand.slice(0, -1);
 }
 
-function deleteLastCharacter() {
-    const output = document.getElementById('output') 
-    const currentContent = output.innerHTML 
+function appendNumber(number) {
+  if (number === "." && currentOperand.includes(".")) return;
 
-    if (currentContent.length > 0) {
-        output.innerHTML = currentContent.slice(0, -1) 
-    }
+  currentOperand += number.toString();
 }
 
-function calculateResult() {
-    const output = document.getElementById("output");
-    const expression = output.innerHTML;
+function chooseOperation(selectedOperation) {
+  if (currentOperand === "") return;
 
-    const regex = /^(\d+(\.\d+)?)([\+\-\*\/%]?)(\d+(\.\d+)?%?)$/;
+  const regex = /^(-?\d+)([+\-])(\d+)%/;
+  const match = currentOperand.match(regex);
 
-    if (regex.test(expression)) {
-        try {
-            let result = expression;
+  if (match) {
+    const [, prev, op, percentage] = match;
+    const computedPercentage = (parseFloat(prev) * parseFloat(percentage)) / 100;
 
-            while (result.includes("%")) {
-                const percentIndex = result.indexOf("%");
-                const numberIndex = result.lastIndexOf(/[+\-*\/]/, percentIndex);
-
-                const number = parseFloat(result.substring(numberIndex + 1, percentIndex));
-                const percent = parseFloat(result.substring(percentIndex + 1, result.length - 1));
-
-                const calculatedValue = number * (percent / 100);
-                result = result.substring(0, numberIndex + 1) + calculatedValue + result.substring(result.length - 1);
-                console.log('Fez a operação')
-            }
-
-            const finalResult = eval(result);
-
-            if (finalResult === Infinity) {
-                alert("Divisão por zero não é permitida!");
-                clearOutput();
-            } else {
-                output.innerHTML = finalResult;
-            }
-        } catch (error) {
-            alert("Ocorreu um erro ao calcular a expressão!");
-            clearOutput();
-        }
-    } else {
-        alert("Operação inválida!");
-        clearOutput();
-    }
+    previousOperand = prev;
+    operation = op;
+    currentOperand = computedPercentage.toString();
+  } else {
+    compute();
+    operation = selectedOperation;
+    previousOperand = currentOperand;
+    currentOperand = "";
+  }
 }
+
+
+function compute() {
+  let computation;
+  const prev = parseFloat(previousOperand);
+  const current = parseFloat(currentOperand);
+
+  if (isNaN(prev) || isNaN(current)) return;
+
+  switch (operation) {
+    case "+":
+      computation = prev + current;
+      break;
+    case "-":
+      computation = prev - current;
+      break;
+    case "*":
+      computation = prev * current;
+      break;
+    case "/":
+      if (current === 0) {
+        alert("Divisão por zero não é permitida!");
+        clear();
+        return;
+      }
+      computation = prev / current;
+      break;
+    case "%":
+      computation = prev + (prev * current) / 100;
+      break;
+    default:
+      return;
+  }
+  currentOperand = computation.toString();
+  operation = undefined;
+  previousOperand = "";
+}
+
+function getDisplayNumber(number) {
+  const stringNumber = number.toString();
+  const integerDigits = parseFloat(stringNumber.split(".")[0]);
+  const decimalDigits = stringNumber.split(".")[1];
+  let integerDisplay = isNaN(integerDigits)
+    ? ""
+    : integerDigits.toLocaleString("pt-br", { maximumFractionDigits: 0 });
+  if (decimalDigits != null) {
+    return `${integerDisplay}.${decimalDigits}`;
+  } else {
+    return integerDisplay;
+  }
+}
+
+function updateDisplay() {
+  const currentOperandTextElement = document.querySelector(
+    "[data-current-operand]"
+  );
+  const previousOperandTextElement = document.querySelector(
+    "[data-previous-operand]"
+  );
+
+  currentOperandTextElement.textContent = getDisplayNumber(currentOperand);
+  if (operation != null) {
+    previousOperandTextElement.textContent = `${getDisplayNumber(
+      previousOperand
+    )} ${operation}`;
+  } else {
+    previousOperandTextElement.textContent = "";
+  }
+}
+
+const numberButtons = document.querySelectorAll("[data-number]");
+const operationButtons = document.querySelectorAll("[data-operation]");
+const equalsButton = document.querySelector("[data-equals]");
+const deleteButton = document.querySelector("[data-delete]");
+const allClearButton = document.querySelector("[data-all-clear]");
+
+numberButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    appendNumber(button.textContent);
+    updateDisplay();
+  });
+});
+
+operationButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    chooseOperation(button.textContent);
+    updateDisplay();
+  });
+});
+
+equalsButton.addEventListener("click", () => {
+  compute();
+  updateDisplay();
+});
+
+allClearButton.addEventListener("click", () => {
+  clear();
+  updateDisplay();
+});
+
+deleteButton.addEventListener("click", () => {
+  deleteNumber();
+  updateDisplay();
+});

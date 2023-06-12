@@ -4,7 +4,7 @@ body {
     background: #8b39f099;
 }
 
-.calculator {
+.calculator-grid {
     display: grid;
     justify-content: center;
     align-content: center;
@@ -13,32 +13,25 @@ body {
     grid-template-rows: minmax(120px, auto) repeat(5, 100px);
 }
 
-.calculator > button {
+.calculator-grid > button {
     cursor: pointer;
     font-size: 2rem;
-    border: 1px solid #383838;
+    border: 1px, solid #FFFFFF;
     outline: none;
-    text-decoration: none;
-    background-color: rbga(255, 255, 255, 0.75);
 }
 
-.calculator > button:hover {
-    background-color: #cecece;
+.calculator-grid > button:hover {
+    background-color: #a9a9a9;
 }
 
-#clear, #result {
+.span-two {
+    grid-column: span 2;
     color: #F0ED3A;
     background-color: #8b39f099;
 }
 
-#clear {
-    grid-column: span 2;
-}
-
-#output {
+.output {
     grid-column: 1 / -1;
-    font-size: 2rem;
-    color: #FFFFFF;
     background-color: rgba(0, 0, 0, 0.75);
     display: flex;
     align-items: flex-end;
@@ -47,5 +40,15 @@ body {
     padding: 10px;
     word-wrap: break-word;
     word-break: break-all;
-    border-radius: 10px 10px 0px 0px;
+    border-top: 50px;
+}
+
+.output .previous-operand {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 1.5rem;
+}
+
+.output .current-operand {
+    color: white;
+    font-size: 2.5rem;
 }
