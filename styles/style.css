@@ -1,7 +1,21 @@
+@charset "UTF-8";
+
+:root {
+    --bg-output-color: #000000bf;
+    --bg-color: #8b39f099;
+    --button-border-color: #929292;
+    --button-hover-color: #a9a9a9;
+    --button-constrast-color: #8b39f099;
+    --button-constrast-text-color: #f0ed3a; 
+    --button-hover-contrast-color: #bf95f199;
+    --previous-operand-text-color: #ffffffbf;
+    --current-operand-text-color: #ffffff;
+}
+
 body {
     margin: 0;
     padding: 0;
-    background: #8b39f099;
+    background: var(--bg-color);
 }
 
 .calculator-grid {
@@ -16,23 +30,30 @@ body {
 .calculator-grid > button {
     cursor: pointer;
     font-size: 2rem;
-    border: 1px, solid #FFFFFF;
+    border: 1px solid var(--button-border-color);
     outline: none;
 }
 
 .calculator-grid > button:hover {
-    background-color: #a9a9a9;
+    background-color: var(--button-hover-color);
 }
 
 .span-two {
     grid-column: span 2;
-    color: #F0ED3A;
-    background-color: #8b39f099;
+}
+
+.purple {
+    color: var(--button-constrast-text-color);
+    background-color: var(--button-constrast-color);
+}
+
+button.purple:hover {
+    background-color: var(--button-hover-contrast-color);
 }
 
 .output {
     grid-column: 1 / -1;
-    background-color: rgba(0, 0, 0, 0.75);
+    background-color: #000000bf;
     display: flex;
     align-items: flex-end;
     justify-content: space-around;
@@ -44,11 +65,11 @@ body {
 }
 
 .output .previous-operand {
-    color: rgba(255, 255, 255, 0.75);
+    color: var(--previous-operand-text-color);
     font-size: 1.5rem;
 }
 
 .output .current-operand {
-    color: white;
+    color: var(--current-operand-text-color);
     font-size: 2.5rem;
 }
